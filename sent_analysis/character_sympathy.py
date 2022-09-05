@@ -8,7 +8,7 @@ if system == "wcph113":
 
 import os
 import pandas as pd
-from preprocessing.presetting import global_corpus_representation_directory, heftroman_base_directory, load_stoplist, vocab_lists_dicts_directory
+from preprocessing.presetting import global_corpus_representation_directory, heftroman_base_directory, load_stoplist, vocab_lists_dicts_directory, local_temp_directory
 from ast import literal_eval
 
 conll_path = os.path.join(heftroman_base_directory(system), "conll")
@@ -112,4 +112,4 @@ neg_list = neg_df["German (de)"].values.tolist()
 full_sna_df = add_symp_df(sna_df, pos_list, neg_list)
 print(full_sna_df)
 
-full_sna_df.to_csv(os.path.join(global_corpus_representation_directory(system), "Heftromane_SNA_Emo_Matrix.csv"))
+full_sna_df.to_csv(os.path.join(local_temp_directory(system), "Heftromane_SNA_Emo_Matrix.csv"))

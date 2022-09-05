@@ -9,7 +9,7 @@ my_language_model_de = language_model_path(system)
 
 lists_path = vocab_lists_dicts_directory(system)
 for filename in os.listdir(lists_path):
-    if "Ausgangsliste_neg" in filename:
+    if "Ausgangsliste_Erotik" in filename:
         input_words = load_stoplist(os.path.join(lists_path, filename))
         print(input_words)
         res_filename = filename.replace("Ausgangsliste", "ResultList")

@@ -8,7 +8,7 @@ import pandas as pd
 from preprocessing.presetting import local_temp_directory, global_corpus_representation_directory
 from collections import Counter
 
-corpus_path = os.path.join(local_temp_directory(system), "Namen_Heftroman_chunks")
+corpus_path = os.path.join(local_temp_directory(system), "ergaenzt_chunks5parts_names")
 
 d = {}
 for filename in os.listdir(corpus_path):
@@ -25,5 +25,5 @@ df = pd.DataFrame.from_dict(d, orient="index")
 print(df)
 
 
-df.to_csv(os.path.join(global_corpus_representation_directory(system), "DocNamesCounterMatrix.csv"))
+df.to_csv(os.path.join(local_temp_directory(system), "erg_DocNamesCounterMatrix.csv"))
 

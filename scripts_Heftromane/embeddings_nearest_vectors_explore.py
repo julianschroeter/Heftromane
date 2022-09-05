@@ -13,7 +13,7 @@ print(my_language_model_de)
 vocabulary_path=os.path.join(vocab_lists_dicts_directory(system), "wordlist_german.txt" )
 
 lists_path = vocab_lists_dicts_directory(system)
-list_of_keywords=["Angriff", "Attacke", "Überfall"]
+list_of_keywords=["Flammen", "Schwelbrand", "Explosion", "brennen"]
 
 nlp = spacy.load(my_language_model_de)
 all_output_words, all_vectors = [], []
@@ -21,7 +21,7 @@ all_output_words, all_vectors = [], []
 for word in list_of_keywords:
     try:
         ms = nlp.vocab.vectors.most_similar(
-            np.asarray([nlp.vocab.vectors[nlp.vocab.strings[word]]]), n=5)
+            np.asarray([nlp.vocab.vectors[nlp.vocab.strings[word]]]), n=2)
     except KeyError:
         continue
 
@@ -67,7 +67,7 @@ for i, name in enumerate(all_output_words):
 plt.show()
 
 
-fig = plt.figure(figsize=[10,10])
+fig = plt.figure(figsize=[5,5])
 ax = plt.axes(projection="3d")
 
 pca = PCA(n_components=3)
@@ -77,8 +77,10 @@ vecs = pca.fit_transform(vectors)
 for i, name in enumerate(all_output_words):
 
     ax.scatter3D(vecs[i, 0], vecs[i, 1], vecs[i, 2], c=colors_list[i])
-    ax.text(vecs[i, 0], vecs[i, 1], vecs[i, 2], '%s' % (str(name)), size=20, zorder=1,
+    ax.text(vecs[i, 0], vecs[i, 1], vecs[i, 2], '%s' % (str(name)), size=10, zorder=1,
             color=colors_list[i])
+
+plt.title("Dimensionsreduktion für nächste Vektoren")
 plt.show()
 
 #semantic_words_list = keywords_to_semantic_fields(list_of_keywords=["erschrecken"], n_most_relevant_words=50,

@@ -132,25 +132,25 @@ class DocSentFearMatrix(DocFeatureMatrix):
         if self.corpus_as_dict is None:
             dic = {}
             for filepath in os.listdir(self.corpus_path):
-                theme_shares_obj = FearShare(filepath=os.path.join(self.corpus_path, filepath), token_length=0,
-                                                keep_pos_items=self.keep_pos_items,
-                                                text=None, id=None, chunks=None,
-                                                pos_triples=None, remove_hyphen=True,
-                                                correct_ocr=self.correct_ocr, eliminate_pagecounts=self.eliminate_pagecounts,
-                                                handle_special_characters=self.handle_special_characters,
-                                                normalize_orthogr=self.normalize_orthogr, normalization_table_path=self.normalization_table_path,
-                                                inverse_translate_umlaute=self.inverse_translate_umlaute,
-                                                eliminate_pos_items=self.eliminate_pos_items,
-                                                list_keep_pos_tags=self.list_of_pos_tags,
-                                                list_eliminate_pos_tags=self.list_eliminate_pos_tags, lemmatize=self.lemmatize,
-                                                sz_to_ss=False, translate_umlaute=False, max_length=5000000,
-                                                remove_stopwords="before_chunking", stopword_list=None,
-                                                language_model=self.language_model)
-                theme_shares_obj()
-                print("currently proceeds text with id: ", theme_shares_obj.id)
-                shares_list = theme_shares_obj.calculate_share(fear_dict=self.sent_dict)
-                dic[theme_shares_obj.id] = shares_list
-
-            df = pd.DataFrame(dic).T
-            df.columns = [wordlist[0] for wordlist in self.list_of_wordlists]
+                if filepath == filepath: # here you can define some restrictions
+                    theme_shares_obj = FearShare(filepath=os.path.join(self.corpus_path, filepath), token_length=0,
+                                                    keep_pos_items=self.keep_pos_items,
+                                                    text=None, id=None, chunks=None,
+                                                    pos_triples=None, remove_hyphen=True,
+                                                    correct_ocr=self.correct_ocr, eliminate_pagecounts=self.eliminate_pagecounts,
+                                                    handle_special_characters=self.handle_special_characters,
+                                                    normalize_orthogr=self.normalize_orthogr, normalization_table_path=self.normalization_table_path,
+                                                    inverse_translate_umlaute=self.inverse_translate_umlaute,
+                                                    eliminate_pos_items=self.eliminate_pos_items,
+                                                    list_keep_pos_tags=self.list_of_pos_tags,
+                                                    list_eliminate_pos_tags=self.list_eliminate_pos_tags, lemmatize=self.lemmatize,
+                                                    sz_to_ss=False, translate_umlaute=False, max_length=5000000,
+                                                    remove_stopwords="before_chunking", stopword_list=None,
+                                                    language_model=self.language_model)
+                    theme_shares_obj()
+                    print("currently proceeds text with id: ", theme_shares_obj.id)
+                    shares_list = theme_shares_obj.calculate_share(fear_dict=self.sent_dict)
+                    dic[theme_shares_obj.id] = shares_list
+            print(dic)
+            df = pd.DataFrame.from_dict(dic, orient="index", columns=["Angstempfinden"])
             self.data_matrix_df = df

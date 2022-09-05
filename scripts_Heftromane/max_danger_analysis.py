@@ -25,45 +25,48 @@ def replace_full_name(name, list_of_names):
 
 scaler = StandardScaler()
 scaler = MinMaxScaler()
-columns_transl_dict = {"Gewaltverbrechen":"Gewaltverbrechen", "verlassen": "SentLexFear", "grässlich":"Angstempfinden",
+columns_transl_dict = {"Gewaltverbrechen":"Gewaltverbrechen", "verlassen": "SentLexFear", "grässlich":"embedding_Angstempfinden",
                        "Klinge":"Kampf", "Oberleutnant": "Krieg", "rauschen":"UnbekannteEindr", "Dauerregen":"Sturm",
-                       "zerstören": "Feuer", "entführen":"Entführung", "lieben": "Liebe"}
+                       "zerstören": "Feuer", "entführen":"Entführung", "lieben": "Liebe", "Brustwarzen": "Erotik"}
 
 
 infile_path = os.path.join(local_temp_directory(system), "DocSuspenseFormsMatrix.csv")
 metadata_filepath = os.path.join(heftroman_base_directory(system), "meta.tsv" )
 
-
+sent_fear_path = os.path.join(local_temp_directory(system), "DocSentFearMatrix.csv")
+erotic_path = os.path.join(local_temp_directory(system), "erotik_DocSuspenseFormsMatrix.csv")
 matrix = DocFeatureMatrix(data_matrix_filepath=infile_path)
-
 df = matrix.data_matrix_df
+
+sent_fear_df = pd.read_csv(sent_fear_path, index_col=0)
+erotic_df = pd.read_csv(erotic_path, index_col=0)
+df = pd.concat([df, sent_fear_df, erotic_df], axis=1)
 
 df = df.rename(columns=columns_transl_dict)
 scaled_features = scaler.fit_transform(df)
 df = pd.DataFrame(scaled_features, index=df.index, columns=df.columns)
-print(df)
-sinclair_1_df = df.loc["k00300000745_0000"]
-sinclair_2_df = df.loc["k00300000745_0001"]
-sinclair_3_df = df.loc["k00300000745_0002"]
-sinclair_4_df = df.loc["k00300000745_0003"]
-sinclair_5_df = df.loc["k00300000745_0004"]
 
-danger_df = df.drop(columns=["Liebe", "SentLexFear", "Angstempfinden","UnbekannteEindr"])
-print(danger_df)
+
+danger_df = df.drop(columns=["Erotik", "Liebe", "SentLexFear", "embedding_Angstempfinden","UnbekannteEindr", "Angstempfinden", "großzügig", "verwerflich", "Sturm", "Feuer"])
+
 danger_df["max_value"] = danger_df.max(axis=1)
 danger_df["max_danger_typ"] = danger_df.idxmax(axis=1)
+
+danger_df["embedding_Angstempfinden"] = df["embedding_Angstempfinden"]
 danger_df["Angstempfinden"] = df["Angstempfinden"]
 danger_df["UnbekannteEindr"] = df["UnbekannteEindr"]
-
+danger_df["Liebe"] = df["Liebe"]
+danger_df["Erotik"] = df["Erotik"]
 danger_df["doc_chunk_id"] = danger_df.index
 #danger_df["doc_chunk_id"] = danger_df["doc_chunk_id"].apply(lambda x: str(x)[:-4])
 danger_df["doc_id"] = danger_df["doc_chunk_id"].apply(lambda x: str(x)[:-5])
 danger_df["chunk_id"] = danger_df["doc_chunk_id"].apply(lambda x: str(x)[-4:])
 
-sinclair_df = danger_df[danger_df["doc_id"] == "k00300000745"]
-print(sinclair_df)
+#sinclair_df = danger_df[danger_df["doc_id"] == "k00300000745"]
+#print(sinclair_df)
 
-print(danger_df)
+
+
 
 idx = danger_df.groupby("doc_id")["max_value"].transform(max) == danger_df["max_value"]
 print(idx)
@@ -72,7 +75,6 @@ max_chunk_danger_df = danger_df[idx]
 max_chunk_danger_df.set_index("doc_chunk_id", inplace=True)
 #max_chunk_danger_df = max_chunk_danger_df.drop(columns=["doc_chunk_id"])
 
-print(max_chunk_danger_df.loc["k00300000745_0004"])
 
 
 endanger_char_df = pd.read_csv(os.path.join(local_temp_directory(system), "DocNamesCounterMatrix.csv"), index_col=0)
@@ -115,3 +117,7 @@ df["gender_EndChar"] = df.apply(lambda x: "male" if x.EndCharName_full in male_l
 df["EndChar_series_protagonist"] = df.apply(lambda x: True if x.EndCharName_full in protagonist_list else False, axis=1)
 print(df)
 df.to_csv(os.path.join(local_temp_directory(system), "MaxDangerCharacters.csv"))
+
+print(danger_df.max_danger_typ.values)
+
+danger_df.to_csv(os.path.join(local_temp_directory(system), "AllChunksDangerCharacters.csv"))
