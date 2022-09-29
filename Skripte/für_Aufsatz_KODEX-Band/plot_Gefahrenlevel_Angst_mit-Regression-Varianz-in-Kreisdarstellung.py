@@ -24,7 +24,7 @@ print(data_df)
 df = pd.concat([data_df, meta_df] ,axis=1)
 
 
-y_variable =  "centr_EndChar" # "symp_EndChar" #  "Angstempfinden" #
+y_variable =  "Angstempfinden" # "symp_EndChar" #  "centr_EndChar" #
 x_variables = ["max_value"] #["centr_EndChar"] #
 
 df = df.dropna(subset=[y_variable])
@@ -32,8 +32,8 @@ df = df.dropna(subset=[x_variables[0]])
 
 print(df)
 
-genres_list = ["krimi", "horror", "liebe", "abenteuer", "scifi", "krieg", "western", "fantasy"]
-colors_list = ["green", "black", "red", "purple", "cyan", "brown", "orange", "magenta"]
+genres_list = ["krimi", "horror", "liebe", "abenteuer", "scifi", "krieg"]
+colors_list = ["green", "black", "red", "purple", "cyan", "brown"]
 zipped_dict = dict(zip(genres_list, colors_list[:len(colors_list)]))
 
 df = df[df.isin({"genre": genres_list}).any(1)]
@@ -132,9 +132,9 @@ for x_variable in x_variables:
     new_colors_list = [zipped_dict[k] for k in class_labels if k in colors_list]
     ax.scatter(centroids[:,0], centroids[:,1], color=new_colors_list)
 
-    print(df[df["genre"] == "fantasy"])
-    print(class_labels.index("fantasy"))
-    print(centroids[class_labels.index("fantasy")])
+    #print(df[df["genre"] == "fantasy"])
+    #print(class_labels.index("fantasy"))
+    #print(centroids[class_labels.index("fantasy")])
 
     df["dist_centroid"] = df.apply(lambda x: dist([x[x_variable], x[y_variable]], [centroids[class_labels.index(x["genre"])][0], centroids[class_labels.index(x["genre"])][1]]), axis=1  )
 
@@ -155,10 +155,10 @@ for x_variable in x_variables:
 
             color = zipped_dict[class_label]
             print(color)
-            circle = plt.Circle(xy, class_av_dist, color= color, fill=False)
+            circle = plt.Circle(xy, class_av_dist, color= "black", fill=False)
             ax.add_patch(circle)
 
-            plt.annotate(text = str(class_labels[i]), xy= xy , color= color)
+            plt.annotate(text = str(class_labels[i]).capitalize(), xy= xy , color= "black")
 
 
 

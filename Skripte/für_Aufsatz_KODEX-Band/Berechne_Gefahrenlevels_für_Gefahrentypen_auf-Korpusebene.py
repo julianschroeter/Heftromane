@@ -16,7 +16,7 @@ print(my_model_de)
 list_of_wordlists = []
 
 for filepath in os.listdir(vocab_lists_dicts_directory(system)):
-    if "ResultList_Erotik" in filepath:
+    if "ResultList" in filepath:
         print(filepath)
         wordlist = load_stoplist(os.path.join(vocab_lists_dicts_directory(system), filepath))
         list_of_wordlists.append(wordlist)
@@ -47,7 +47,7 @@ matrix_obj = DocThemesMatrix(list_of_wordlists=list_of_wordlists,
                              language_model=my_model_de)
 print(matrix_obj.data_matrix_df)
 
-outfile_path = os.path.join(local_temp_directory(system), "erotik_DocSuspenseFormsMatrix.csv")
+outfile_path = os.path.join(local_temp_directory(system), "DocSuspenseFormsMatrix.csv")
 matrix_obj.save_csv(outfile_path)
 
 

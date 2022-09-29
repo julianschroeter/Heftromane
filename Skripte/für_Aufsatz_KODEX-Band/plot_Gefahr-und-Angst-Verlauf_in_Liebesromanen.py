@@ -92,25 +92,28 @@ for reihe in reihen:
     plt.title("Liebesromane: Gefahrentyp und Angst-Korrelation für Reihe: " + reihe.capitalize())
     plt.show()
 
-    values_dict[reihe] = [mean(reihe_df.loc[:, "max_value"]), mean(reihe_df.loc[:, "Angstempfinden"]),
-                          mean(reihe_df.loc[:, "Erotik"]),mean(reihe_df.loc[:, "Liebe"]) ]
+    values_dict[reihe] = [mean(reihe_df.loc[:, "max_value"]), mean(reihe_df.loc[:, "Angstempfinden"])
+                           ]
 
 print(values_dict)
 values_df = pd.DataFrame.from_dict(values_dict, orient="index")
 values_df.rename(index= {"Baccara": 2020, "Julia": 2000, "VERGISS MEIN NICHT": 1920}, inplace=True)
-values_df.rename(columns={0:"Gefahrenlevel", 1: "Angstempfinden", 2:"Erotik", 3:"Liebe"}, inplace=True)
+values_df.rename(columns={0:"Gefahrenlevel", 1: "Angstempfinden"}, inplace=True)
+values_df.sort_index(inplace=True)
 
 #values_df = values_df.set_index("year")
 print(values_df)
 fig, ax = plt.subplots()
-values_df.plot(kind="line")
-#plt.title("Verlauf über die Zeit")
-#plt.xticks(rotation=45)
-#plt.show()
+values_df.plot(kind="line", color=["black", "grey"])
+plt.title("Zeitlicher Verlauf: Gefahr und Angst in Liebesromanen")
+plt.ylabel("Gefahren- und Angstlevel")
+plt.xticks(rotation=45)
+plt.show()
 
 #fix, ax = plt.subplots()
-values_df.plot(kind="bar")
-plt.title("Verlauf über die Zeit")
+values_df.plot(kind="bar" ,  color=["black", "grey"])
+plt.ylabel("Gefahren- und Angstlevel")
+plt.title("Zeitlicher Verlauf: Gefahr und Angst in Liebesromanen")
 plt.xticks(rotation=45)
 plt.show()
 
@@ -126,7 +129,7 @@ for reihe in reihen:
     regr = LinearRegression()
     regr.fit(df.loc[:, x_variable].array.reshape(-1, 1), df.loc[:, y_variable])
     y_pred = regr.predict(df.loc[:, x_variable].array.reshape(-1, 1))
-    plt.plot(df.loc[:, x_variable], y_pred, color="green", linewidth=3)
+    plt.plot(df.loc[:, x_variable], y_pred, color="black", linewidth=3)
 
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles=reihen_mpatches_list)

@@ -64,7 +64,7 @@ columns_transl_dict = {"Gewaltverbrechen":"Gewaltverbrechen", "verlassen": "Sent
                        "zerstören": "Feuer", "entführen":"Entführung", "lieben": "Liebe"}
 
 dangers_list = ["Gewaltverbrechen", "Kampf", "Krieg", "Sturm", "Feuer", "Entführung"]
-dangers_colors = ["cyan", "orange", "magenta", "blue", "pink", "purple"]
+dangers_colors = ["dimgrey", "darkgrey", "black", "white", "lightgrey", "snow"]
 dangers_dict = dict(zip(dangers_list, dangers_colors[:len(dangers_list)]))
 
 dangers_mpatches_list = []
@@ -86,10 +86,6 @@ df = df.rename(columns=columns_transl_dict)
 df["genre"] = df.apply(lambda x: metadata_df.loc[x["doc_id"], "genre"], axis=1)
 
 print(df)
-
-dangers_list = ["Gewaltverbrechen", "Kampf", "Krieg", "Sturm", "Feuer", "Entführung"]
-dangers_colors = ["cyan", "orange", "magenta", "blue", "pink", "purple"]
-dangers_dict = dict(zip(dangers_list, dangers_colors[:len(dangers_list)]))
 
 genres_list = ["krimi", "horror", "liebe", "abenteuer", "scifi", "krieg", "fantasy"]
 genre_danger_dict = {}
@@ -155,7 +151,7 @@ df = genre_danger_df
 
 scaler = StandardScaler()
 scaled_features = scaler.fit_transform(df)
-df = pd.DataFrame(scaled_features, index=df.index, columns=df.columns)
+df = pd.DataFrame(scaled_features, index=[genre.capitalize() for genre in df.index.tolist()], columns=df.columns)
 
 df = df.sort_values(by=["Wechsel des Gefahrentyps"],ascending=True)
 
@@ -164,8 +160,10 @@ print(df)
 
 
 #fig, ax = plt.subplots()
-df.plot.bar(subplots=False)
-plt.xticks(rotation=45)
+colors = ["black", "lightgrey"]
+#plt.style.use('seaborn')
+df.plot.bar(subplots=False, color = colors)
+plt.xticks(rotation=30)
 plt.title("Wechsel der Gefahrensituationen zwischen Textabschnitten")
 plt.show()
 df.plot.line()

@@ -3,10 +3,9 @@ if system == "wcph113":
     import sys
     sys.path.append('/mnt/data/users/schroeter/git/Heftromane')
 
-import pandas as pd
-from preprocessing.presetting import global_corpus_representation_directory, heftroman_base_directory, local_temp_directory
+
+from preprocessing.presetting import heftroman_base_directory, local_temp_directory
 from preprocessing.corpus import DocFeatureMatrix
-from topicmodeling.postprocessing import ChunksFeatureMatrix
 import os
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.linear_model import LinearRegression

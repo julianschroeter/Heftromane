@@ -4,9 +4,8 @@ if system == "wcph113":
     sys.path.append('/mnt/data/users/schroeter/git/Heftromane')
 
 import pandas as pd
-from preprocessing.presetting import global_corpus_representation_directory, heftroman_base_directory, local_temp_directory
+from preprocessing.presetting import heftroman_base_directory, local_temp_directory
 from preprocessing.corpus import DocFeatureMatrix
-from topicmodeling.postprocessing import ChunksFeatureMatrix
 import os
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.linear_model import LinearRegression
@@ -41,21 +40,10 @@ matrix = DocFeatureMatrix(data_matrix_filepath=infile_path)
 df = matrix.data_matrix_df
 
 df = df.rename(columns=columns_transl_dict)
-#scaled_features = scaler.fit_transform(df)
-#df = pd.DataFrame(scaled_features, index=df.index, columns=df.columns)
-
-
 
 metadata_filepath = os.path.join(heftroman_base_directory(system), "meta.tsv" )
 metadata_df = pd.read_csv(metadata_filepath, sep="\t").set_index("id")
 df["genre"] = df.apply(lambda x: metadata_df.loc[x["doc_id"], "genre"], axis=1)
-
-print(df)
-#danger_df = df.drop(columns=["Liebe", "SentLexFear", "Angstempfinden", "UnbekannteEindr"])
-#print(danger_df)
-#danger_df["max_value"] = danger_df.max(axis=1)
-#danger_df["max_danger_typ"] = danger_df.idxmax(axis=1)
-#print(danger_df)
 
 y_variable = "Angstempfinden"
 x_variables = ["max_value"]
@@ -66,10 +54,6 @@ else: y_variable_legend = y_variable
 
 infile_path = os.path.join(local_temp_directory(system), "MaxDangerCharacters.csv")
 max_matrix = DocFeatureMatrix(data_matrix_filepath=infile_path, metadata_csv_filepath=metadata_filepath, metadata_df=None, mallet=False)
-#max_matrix.adjust_doc_chunk_multiindex()
-
-#max_df = max_matrix.last_chunk()
-
 max_matrix = max_matrix.add_metadata("genre")
 max_df = max_matrix.data_matrix_df
 
@@ -92,7 +76,7 @@ for genre, color in zipped_dict.items():
 
 gendered_colors_mpatches_list = []
 genders = ["Frauengenres", "Männergenres"]
-gender_colors = ["red", "blue"]
+gender_colors = ["black", "grey"]
 gendered_colors_dict = dict(zip(genders, gender_colors))
 for genre, color in gendered_colors_dict.items():
     patch = mpatches.Patch(color=color, label=genre.capitalize())
@@ -104,7 +88,7 @@ for x_variable in x_variables:
     regr = LinearRegression()
     regr.fit(df.loc[:, x_variable].array.reshape(-1, 1), df.loc[:, y_variable])
     y_pred = regr.predict(df.loc[:, x_variable].array.reshape(-1, 1))
-    plt.plot(df.loc[:, x_variable], y_pred, color="purple", linewidth=3)
+    plt.plot(df.loc[:, x_variable], y_pred, color="black", linewidth=3)
 
     if x_variable == "max_value":
         x_variable_legend = "Gefahrenlevel"
@@ -175,9 +159,9 @@ for x_variable in x_variables:
         genre_df = genre_obj.data_matrix_df
         print(genre_df)
         if color == "red":
-            plt.scatter(genre_df.loc[:, x_variable], genre_df.loc[:, y_variable], color=color, label=gender)
+            plt.scatter(genre_df.loc[:, x_variable], genre_df.loc[:, y_variable], marker= "x", color=color, label=gender)
         else:
-            plt.scatter(genre_df.loc[:,x_variable], genre_df.loc[:, y_variable], color=color, label=gender, alpha=0.2)
+            plt.scatter(genre_df.loc[:,x_variable], genre_df.loc[:, y_variable], marker = "o", color=color, label=gender, alpha=0.2)
 
         #regr = LinearRegression()
         #regr.fit(genre_df.loc[:,x_variable].array.reshape(-1,1), genre_df.loc[:, y_variable])
